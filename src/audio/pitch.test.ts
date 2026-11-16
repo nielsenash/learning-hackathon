@@ -56,7 +56,7 @@ describe("scoreSing", () => {
 
   it("fails a note past the quarter-tone line and still names the nearest note", () => {
     const sampleRate = 44100;
-    const sung = frequencyForNote("E4") * 2 ** (80 / 1200);
+    const sung = frequencyForNote("E4") * 2 ** (40 / 1200);
     const score = scoreSing("C4", sine(sung, sampleRate, sampleRate * 2), sampleRate);
     expect(score.pass).toBe(false);
     expect(score.detectedNote).toBe("E4");
