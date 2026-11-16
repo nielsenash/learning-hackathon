@@ -7,7 +7,7 @@ There are two modes, both using the same twelve piano notes from C4 to B4 (A4 = 
 - **Listen and identify.** The app plays a bundled piano sample. You pick the note you heard. A round is five items.
 - **Sing and match.** The app shows a target note. You hum or sing for about two seconds. The app estimates the steadiest pitch in the clip, shows the error in cents, and marks a pass or fail. A pass is within 50 cents of the target (a quarter tone). A round is five items.
 
-Audio stays in the browser. Pitch detection runs locally, and nothing is uploaded. Best scores, streaks, and a short history of the last ten finished rounds are saved in `localStorage`. There is no account and no server. Clearing site data resets progress.
+Audio stays in the browser. Pitch detection runs locally, and nothing is uploaded. Users can create a local account, log in, and see personal best scores, accuracy, streaks, and a short history of the last ten finished rounds. Account data and progress are saved in `localStorage`; there is no server or cross-device sync. Clearing site data resets accounts and progress.
 
 The microphone is requested only when a sing round starts. If permission is denied, sing mode explains that a microphone is required, and listen mode still works.
 

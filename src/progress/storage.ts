@@ -17,7 +17,7 @@ export type Progress = {
   history: RoundRecord[];
 };
 
-const STORAGE_KEY = "pitch-recognition-progress";
+const LEGACY_STORAGE_KEY = "pitch-recognition-progress";
 const HISTORY_LIMIT = 10;
 
 type KeyValueStore = {
@@ -97,9 +97,12 @@ function isProgress(value: unknown): value is Progress {
   );
 }
 
-export function loadProgress(storage: Pick<KeyValueStore, "getItem"> = localStorage): Progress {
+export function loadProgress(
+  storage: Pick<KeyValueStore, "getItem"> = localStorage,
+  storageKey = LEGACY_STORAGE_KEY,
+): Progress {
   try {
-    const raw = storage.getItem(STORAGE_KEY);
+    const raw = storage.getItem(storageKey);
     if (!raw) return emptyProgress();
     const parsed: unknown = JSON.parse(raw);
     return isProgress(parsed) ? parsed : emptyProgress();
@@ -108,6 +111,10 @@ export function loadProgress(storage: Pick<KeyValueStore, "getItem"> = localStor
   }
 }
 
-export function saveProgress(progress: Progress, storage: KeyValueStore = localStorage): void {
-  storage.setItem(STORAGE_KEY, JSON.stringify(progress));
+export function saveProgress(
+  progress: Progress,
+  storage: KeyValueStore = localStorage,
+  storageKey = LEGACY_STORAGE_KEY,
+): void {
+  storage.setItem(storageKey, JSON.stringify(progress));
 }

@@ -1,3 +1,4 @@
+import type { Account } from "../progress/accounts";
 import type { Mode, Progress } from "../progress/storage";
 
 const MODE_LABEL: Record<Mode, string> = {
@@ -7,9 +8,11 @@ const MODE_LABEL: Record<Mode, string> = {
 
 type Props = {
   progress: Progress;
+  account: Account;
   startingSing: boolean;
   onStartListen: () => void;
   onStartSing: () => void;
+  onLogout: () => void;
 };
 
 function formatWhen(timestamp: number): string {
@@ -61,16 +64,29 @@ function ModeCard({
   );
 }
 
-export function Home({ progress, startingSing, onStartListen, onStartSing }: Props) {
+export function Home({ progress, account, startingSing, onStartListen, onStartSing, onLogout }: Props) {
+  const totalRounds = progress.history.length;
+  const totalHits = progress.history.reduce((total, round) => total + round.score, 0);
+  const accuracy = totalRounds === 0 ? null : Math.round((totalHits / (totalRounds * 5)) * 100);
   return (
     <>
-      <header>
+      <header className="topbar">
+        <div>
         <h1>Pitch Recognition</h1>
         <p className="lede">
-          Hear a piano note and name it, or sing a note and see how close you were. Scores stay in this
-          browser.
+          Welcome back, {account.name}. Hear a piano note and name it, or sing a note and see how close you were.
         </p>
+        </div>
+        <button type="button" className="ghost" onClick={onLogout}>Log out</button>
       </header>
+      <section className="card personal-stats">
+        <h2>Your statistics</h2>
+        <div className="stats">
+          <p className="stat"><span>Rounds</span><strong>{totalRounds}</strong></p>
+          <p className="stat"><span>Accuracy</span><strong>{accuracy === null ? "—" : `${accuracy}%`}</strong></p>
+          <p className="stat"><span>Best total</span><strong>{progress.listen.best === null && progress.sing.best === null ? "—" : `${Math.max(progress.listen.best ?? 0, progress.sing.best ?? 0)} / 5`}</strong></p>
+        </div>
+      </section>
       <div className="modes">
         <ModeCard
           title="Listen and identify"

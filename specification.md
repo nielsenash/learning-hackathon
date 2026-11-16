@@ -55,22 +55,24 @@ The user can switch modes from the home screen. A round in progress can be aband
 - Samples are short (about 1–2 seconds), normalized to a similar loudness, and licensed for redistribution.
 - The listen mode plays these files. The sing mode uses the same files only as an optional reference tone.
 
-## Progress
+## Accounts and progress
 
 Stored in `localStorage` only:
 
+- A local account with name, email, and a hashed password.
 - Best score (correct answers out of 5) for each mode.
 - Current streak: consecutive passed sing items, and consecutive correct listen items.
 - A short history of the last 10 finished rounds (mode, score, timestamp).
 
-There is no account, no server, and no sync across browsers. Clearing site data resets progress.
+Users must create an account or log in before practicing. Progress is scoped to the signed-in account. There is no server or sync across browsers. Clearing site data resets accounts and progress.
 
 ## Screens
 
-1. **Home.** Name the two modes, show best score and streak for each, and offer Start.
-2. **Listen round.** Replay button, 12 note buttons, then correct or incorrect with the right answer.
-3. **Sing round.** Target note, Play reference, Record, then cents, detected note, and pass or fail.
-4. **Round summary.** Score out of 5 and a control to go home or play again.
+1. **Account.** Create an account or log in.
+2. **Home.** Greet the signed-in user, show personal statistics plus best score and streak for each mode, and offer Start.
+3. **Listen round.** Replay button, 12 note buttons, then correct or incorrect with the right answer.
+4. **Sing round.** Target note, Play reference, Record, then cents, detected note, and pass or fail.
+5. **Round summary.** Score out of 5 and a control to go home or play again.
 
 Microphone permission is requested only when the user starts a sing round. If permission is denied, the sing mode explains that a microphone is required and the listen mode stays available.
 
@@ -80,7 +82,7 @@ Microphone permission is requested only when the user starts a sing round. If pe
 - Static hosting. No backend.
 - Web Audio API for playback and for capturing the microphone clip.
 - A small in-browser pitch detector (autocorrelation or a similar library) to estimate the fundamental frequency.
-- `localStorage` for scores and streaks.
+- `localStorage` for accounts, scores, and streaks.
 
 ## Demo script
 
@@ -100,7 +102,7 @@ Microphone permission is requested only when the user starts a sing round. If pe
 
 ## Out of scope
 
-- User accounts, uploaded audio, and melodies or intervals.
+- Uploaded audio, and melodies or intervals.
 - Live pitch display while singing.
 - More than one octave, instrument choice, or difficulty levels.
 - A backend, a database, or audio stored on a server.
