@@ -1,0 +1,12 @@
+Piano samples
+
+These notes are 1.5-second excerpts of the FluidR3_GM acoustic grand piano, peak-normalized and faded at the end for this demo.
+
+Source recordings: FluidR3_GM.sf2 by Frank Wen.
+Web renders: midi-js-soundfonts
+https://github.com/gleitz/midi-js-soundfonts
+
+FluidR3_GM is released under the Creative Commons Attribution 3.0 license:
+https://creativecommons.org/licenses/by/3.0/
+
+Changes: each note from C4 to B4 was trimmed to 1.5 seconds, peak-normalized to about -1 dBFS, and given a short fade at the end. Sharp notes use the enharmonic flat recording (C# from Db, and so on).

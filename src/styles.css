@@ -1,0 +1,237 @@
+:root {
+  color: #1c1915;
+  background: #f3efe6;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  line-height: 1.45;
+}
+
+body {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+}
+
+.app {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+h1 {
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.5rem;
+}
+
+h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.25rem;
+}
+
+p {
+  margin: 0.35rem 0;
+}
+
+.lede {
+  margin: 0 0 1.5rem;
+  color: #3f3a33;
+}
+
+.modes {
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  background: #fffdf8;
+  border: 1px solid #e4dccb;
+  border-radius: 16px;
+  padding: 1.1rem 1.15rem 1.2rem;
+}
+
+.history-card {
+  margin-top: 1rem;
+}
+
+.stats {
+  display: flex;
+  gap: 1.75rem;
+  margin: 0.85rem 0 1rem;
+}
+
+.stat {
+  margin: 0;
+}
+
+.stat span {
+  display: block;
+  font-size: 0.78rem;
+  color: #6b645a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stat strong {
+  font-size: 1.4rem;
+  font-variant-numeric: tabular-nums;
+}
+
+button.primary,
+button.secondary,
+button.note,
+button.ghost {
+  border-radius: 12px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+button.primary {
+  background: #1f4b3a;
+  color: #f7f4ee;
+  padding: 0.75rem 1.1rem;
+  min-height: 3rem;
+}
+
+button.secondary {
+  background: #efe7d6;
+  color: #1c1915;
+  padding: 0.75rem 1.1rem;
+  min-height: 3rem;
+}
+
+button.ghost {
+  background: transparent;
+  color: #5c564c;
+  padding: 0.4rem 0.1rem;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+button:focus-visible {
+  outline: 3px solid #1f4b3a;
+  outline-offset: 2px;
+}
+
+.note-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+button.note {
+  min-height: 3.5rem;
+  background: #fff;
+  border: 1px solid #d9d0c0;
+  font-size: 1.15rem;
+}
+
+button.note.correct {
+  background: #e5f5ea;
+  border-color: #1b7f4a;
+  color: #145c36;
+}
+
+button.note.wrong {
+  background: #fdeceb;
+  border-color: #a33b32;
+  color: #8a2e27;
+}
+
+.result {
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  margin: 0.25rem 0 1rem;
+}
+
+.result.pass {
+  background: #e5f5ea;
+}
+
+.result.fail {
+  background: #fdeceb;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin: 0.75rem 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #6b645a;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.target {
+  font-size: 3rem;
+  margin: 0.1rem 0 0.4rem;
+  letter-spacing: -0.03em;
+}
+
+.scoreline {
+  font-size: 2rem;
+  margin: 0.4rem 0 1rem;
+}
+
+.muted,
+.credit {
+  color: #6b645a;
+}
+
+.credit {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.error {
+  color: #8a2e27;
+}
+
+.history {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+
+.history li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.5rem 0;
+  border-top: 1px solid #eee6d8;
+}
+
+@media (max-width: 560px) {
+  .note-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .history li {
+    grid-template-columns: 1fr auto;
+  }
+
+  .history time {
+    grid-column: 1 / -1;
+  }
+}
