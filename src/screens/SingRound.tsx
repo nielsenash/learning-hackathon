@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { formatCents, type NoteName } from "../audio/notes";
+import { formatCents, randomOctave, type NoteName, type NoteOctave } from "../audio/notes";
 import { scoreSing, type SingScore } from "../audio/pitch";
 import { playNote, stopPlayback } from "../audio/player";
 import { recordClip } from "../audio/recorder";
@@ -17,6 +17,7 @@ type Phase = "idle" | "recording" | "revealed";
 
 export function SingRound({ onExit, onMicDenied, notes: selectedNotes, onComplete }: Props) {
   const [notes] = useState(() => selectedNotes ?? pickRoundNotes());
+  const [octaves] = useState<NoteOctave[]>(() => notes.map(() => randomOctave()));
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("idle");
   const [hits, setHits] = useState<boolean[]>([]);
@@ -24,18 +25,19 @@ export function SingRound({ onExit, onMicDenied, notes: selectedNotes, onComplet
   const [score, setScore] = useState<SingScore | null>(null);
   const [error, setError] = useState<string | null>(null);
   const target = notes[index];
+  const targetOctave = octaves[index];
 
   useEffect(() => {
     let cancelled = false;
     setError(null);
-    playNote(target).catch(() => {
+    playNote(target, targetOctave).catch(() => {
       if (!cancelled) setError("Could not play the reference.");
     });
     return () => {
       cancelled = true;
       stopPlayback();
     };
-  }, [target]);
+  }, [target, targetOctave]);
 
   async function record() {
     if (phase !== "idle") return;
@@ -91,7 +93,7 @@ export function SingRound({ onExit, onMicDenied, notes: selectedNotes, onComplet
           type="button"
           className="secondary"
           disabled={phase === "recording"}
-          onClick={() => void playNote(target)}
+          onClick={() => void playNote(target, targetOctave)}
         >
           Play reference
         </button>

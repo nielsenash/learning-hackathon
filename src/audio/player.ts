@@ -1,4 +1,4 @@
-import { sampleUrl, type NoteName } from "./notes";
+import { sampleUrl, type NoteName, type NoteOctave } from "./notes";
 
 let context: AudioContext | null = null;
 const cache = new Map<NoteName, Promise<AudioBuffer>>();
@@ -43,7 +43,7 @@ async function loadBuffer(note: NoteName, ctx: AudioContext): Promise<AudioBuffe
   }
 }
 
-export async function playNote(note: NoteName): Promise<void> {
+export async function playNote(note: NoteName, octave: NoteOctave = 4): Promise<void> {
   const token = ++playToken;
   const ctx = audioContext();
   if (ctx.state !== "running") await ctx.resume();
@@ -58,6 +58,7 @@ export async function playNote(note: NoteName): Promise<void> {
   }
   const source = ctx.createBufferSource();
   source.buffer = buffer;
+  source.playbackRate.value = 2 ** (octave - 4);
   source.connect(ctx.destination);
   source.onended = () => {
     if (current === source) current = null;

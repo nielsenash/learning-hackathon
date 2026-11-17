@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NOTE_NAMES, type NoteName } from "../audio/notes";
+import { NOTE_NAMES, randomOctave, type NoteName, type NoteOctave } from "../audio/notes";
 import { playNote, stopPlayback } from "../audio/player";
 import { pickRoundNotes } from "../audio/round";
 import type { NoteAttempt } from "../progress/storage";
@@ -12,24 +12,26 @@ type Props = {
 
 export function ListenRound({ onExit, notes: selectedNotes, onComplete }: Props) {
   const [notes] = useState(() => selectedNotes ?? pickRoundNotes());
+  const [octaves] = useState<NoteOctave[]>(() => notes.map(() => randomOctave()));
   const [index, setIndex] = useState(0);
   const [choice, setChoice] = useState<NoteName | null>(null);
   const [hits, setHits] = useState<boolean[]>([]);
   const [attempts, setAttempts] = useState<NoteAttempt[]>([]);
   const [playError, setPlayError] = useState<string | null>(null);
   const target = notes[index];
+  const targetOctave = octaves[index];
 
   useEffect(() => {
     let cancelled = false;
     setPlayError(null);
-    playNote(target).catch(() => {
+    playNote(target, targetOctave).catch(() => {
       if (!cancelled) setPlayError("Could not play that sample.");
     });
     return () => {
       cancelled = true;
       stopPlayback();
     };
-  }, [target]);
+  }, [target, targetOctave]);
 
   function choose(note: NoteName) {
     if (choice) return;
@@ -62,7 +64,12 @@ export function ListenRound({ onExit, notes: selectedNotes, onComplete }: Props)
         Note {index + 1} of {notes.length}
       </h1>
       <div className="row">
-        <button type="button" className="secondary" disabled={choice !== null} onClick={() => void playNote(target)}>
+        <button
+          type="button"
+          className="secondary"
+          disabled={choice !== null}
+          onClick={() => void playNote(target, targetOctave)}
+        >
           Replay
         </button>
       </div>

@@ -15,6 +15,9 @@ export const NOTE_NAMES = [
 
 export type NoteName = (typeof NOTE_NAMES)[number];
 
+export const NOTE_OCTAVES = [3, 4, 5] as const;
+export type NoteOctave = (typeof NOTE_OCTAVES)[number];
+
 export const PASS_CENTS = 50;
 const A4_HZ = 440;
 const MIDI_C4 = 60;
@@ -44,6 +47,10 @@ export function frequencyForMidi(midi: number): number {
 
 export function frequencyForNote(note: NoteName): number {
   return frequencyForMidi(midiForNote(note));
+}
+
+export function randomOctave(random: () => number = Math.random): NoteOctave {
+  return NOTE_OCTAVES[Math.floor(random() * NOTE_OCTAVES.length)];
 }
 
 export function centsBetween(detectedHz: number, targetHz: number): number {

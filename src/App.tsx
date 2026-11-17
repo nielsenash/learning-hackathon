@@ -9,7 +9,7 @@ import {
   type NoteAttempt,
   type Progress,
 } from "./progress/storage";
-import { recommendPracticeNotes } from "./audio/round";
+import { pickRoundNotes } from "./audio/round";
 import { Auth } from "./screens/Auth";
 import { Home } from "./screens/Home";
 import { ListenRound } from "./screens/ListenRound";
@@ -36,7 +36,7 @@ export function App() {
   const [screen, setScreen] = useState<Screen>({ name: "home" });
   const [roundId, setRoundId] = useState(0);
   const [startingSing, setStartingSing] = useState(false);
-  const [recommendedNotes, setRecommendedNotes] = useState(() => recommendPracticeNotes(progress, "listen"));
+  const [roundNotes, setRoundNotes] = useState(() => pickRoundNotes());
 
   function goHome() {
     setScreen({ name: "home" });
@@ -57,7 +57,7 @@ export function App() {
   async function startListen() {
     await resumeAudio();
     setRoundId((id) => id + 1);
-    setRecommendedNotes(recommendPracticeNotes(progress, "listen"));
+    setRoundNotes(pickRoundNotes());
     setScreen({ name: "listen" });
   }
 
@@ -74,7 +74,7 @@ export function App() {
       });
       stream.getTracks().forEach((track) => track.stop());
       setRoundId((id) => id + 1);
-      setRecommendedNotes(recommendPracticeNotes(progress, "sing"));
+      setRoundNotes(pickRoundNotes());
       setScreen({ name: "sing" });
     } catch {
       setScreen({ name: "mic-required" });
@@ -108,7 +108,7 @@ export function App() {
         />
       )}
       {screen.name === "listen" && (
-        <ListenRound key={roundId} onExit={goHome}         notes={recommendedNotes}
+        <ListenRound key={roundId} onExit={goHome}         notes={roundNotes}
         onComplete={(hits, attempts) => finishRound("listen", hits, attempts)} />
       )}
       {screen.name === "sing" && (
@@ -116,7 +116,7 @@ export function App() {
           key={roundId}
           onExit={goHome}
           onMicDenied={() => setScreen({ name: "mic-required" })}
-          notes={recommendedNotes}
+          notes={roundNotes}
           onComplete={(hits, attempts) => finishRound("sing", hits, attempts)}
         />
       )}

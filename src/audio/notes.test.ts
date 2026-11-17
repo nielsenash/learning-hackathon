@@ -6,6 +6,8 @@ import {
   isPass,
   nearestNote,
   NOTE_NAMES,
+  NOTE_OCTAVES,
+  randomOctave,
   pitchClassCentsBetween,
 } from "./notes";
 
@@ -55,5 +57,14 @@ describe("nearest note", () => {
     expect(nearestNote(frequencyForNote("C") / 2 * 2 ** (60 / 1200))).toBe("C#");
     expect(nearestNote(82)).toBe("E");
     expect(nearestNote(500)).toBe("B");
+  });
+
+  describe("reference octaves", () => {
+    it("supports three octaves and selects one deterministically from the configured range", () => {
+      expect(NOTE_OCTAVES).toEqual([3, 4, 5]);
+      expect(randomOctave(() => 0)).toBe(3);
+      expect(randomOctave(() => 0.4)).toBe(4);
+      expect(randomOctave(() => 0.8)).toBe(5);
+    });
   });
 });
