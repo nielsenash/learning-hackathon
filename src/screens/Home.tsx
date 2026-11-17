@@ -1,5 +1,6 @@
 import type { Account } from "../progress/accounts";
 import type { Mode, Progress } from "../progress/storage";
+import { recommendPracticeNotes } from "../audio/round";
 
 const MODE_LABEL: Record<Mode, string> = {
   listen: "Listen and identify",
@@ -68,6 +69,8 @@ export function Home({ progress, account, startingSing, onStartListen, onStartSi
   const totalRounds = progress.history.length;
   const totalHits = progress.history.reduce((total, round) => total + round.score, 0);
   const accuracy = totalRounds === 0 ? null : Math.round((totalHits / (totalRounds * 5)) * 100);
+  const listenRecommendation = recommendPracticeNotes(progress, "listen");
+  const singRecommendation = recommendPracticeNotes(progress, "sing");
   return (
     <>
       <header className="topbar">
@@ -90,7 +93,7 @@ export function Home({ progress, account, startingSing, onStartListen, onStartSi
       <div className="modes">
         <ModeCard
           title="Listen and identify"
-          text="A note plays. Pick the matching name from C4 to B4. Five notes per round."
+          text="A note plays. Pick the matching note name from C to B. Five notes per round."
           best={progress.listen.best}
           streak={progress.listen.streak}
           started={progress.listen.best !== null}
@@ -98,6 +101,7 @@ export function Home({ progress, account, startingSing, onStartListen, onStartSi
           disabled={startingSing}
           onStart={onStartListen}
         />
+        <p className="recommendation">Practice focus: {listenRecommendation.join(", ")}</p>
         <ModeCard
           title="Sing and match"
           text="Hum or sing the target note for about two seconds. Within 50 cents is a pass."
@@ -108,6 +112,7 @@ export function Home({ progress, account, startingSing, onStartListen, onStartSi
           disabled={startingSing}
           onStart={onStartSing}
         />
+        <p className="recommendation">Practice focus: {singRecommendation.join(", ")}</p>
       </div>
       <section className="card history-card">
         <h2>Recent rounds</h2>

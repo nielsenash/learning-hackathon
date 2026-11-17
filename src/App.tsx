@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { resumeAudio } from "./audio/player";
 import { loadSession, logout, progressStorageKey, type Account } from "./progress/accounts";
-import { loadProgress, recordRound, saveProgress, type Mode, type Progress } from "./progress/storage";
+import {
+  loadProgress,
+  recordRound,
+  saveProgress,
+  type Mode,
+  type NoteAttempt,
+  type Progress,
+} from "./progress/storage";
+import { recommendPracticeNotes } from "./audio/round";
 import { Auth } from "./screens/Auth";
 import { Home } from "./screens/Home";
 import { ListenRound } from "./screens/ListenRound";
@@ -28,6 +36,7 @@ export function App() {
   const [screen, setScreen] = useState<Screen>({ name: "home" });
   const [roundId, setRoundId] = useState(0);
   const [startingSing, setStartingSing] = useState(false);
+  const [recommendedNotes, setRecommendedNotes] = useState(() => recommendPracticeNotes(progress, "listen"));
 
   function goHome() {
     setScreen({ name: "home" });
@@ -48,6 +57,7 @@ export function App() {
   async function startListen() {
     await resumeAudio();
     setRoundId((id) => id + 1);
+    setRecommendedNotes(recommendPracticeNotes(progress, "listen"));
     setScreen({ name: "listen" });
   }
 
@@ -64,6 +74,7 @@ export function App() {
       });
       stream.getTracks().forEach((track) => track.stop());
       setRoundId((id) => id + 1);
+      setRecommendedNotes(recommendPracticeNotes(progress, "sing"));
       setScreen({ name: "sing" });
     } catch {
       setScreen({ name: "mic-required" });
@@ -72,10 +83,10 @@ export function App() {
     }
   }
 
-  function finishRound(mode: Mode, hits: boolean[]) {
+  function finishRound(mode: Mode, hits: boolean[], attempts: NoteAttempt[]) {
     if (!account) return;
     setProgress((current) => {
-      const next = recordRound(current, mode, hits);
+      const next = recordRound(current, mode, hits, Date.now(), attempts);
       saveProgress(next, localStorage, progressStorageKey(account.id));
       return next;
     });
@@ -97,14 +108,16 @@ export function App() {
         />
       )}
       {screen.name === "listen" && (
-        <ListenRound key={roundId} onExit={goHome} onComplete={(hits) => finishRound("listen", hits)} />
+        <ListenRound key={roundId} onExit={goHome}         notes={recommendedNotes}
+        onComplete={(hits, attempts) => finishRound("listen", hits, attempts)} />
       )}
       {screen.name === "sing" && (
         <SingRound
           key={roundId}
           onExit={goHome}
           onMicDenied={() => setScreen({ name: "mic-required" })}
-          onComplete={(hits) => finishRound("sing", hits)}
+          notes={recommendedNotes}
+          onComplete={(hits, attempts) => finishRound("sing", hits, attempts)}
         />
       )}
       {screen.name === "mic-required" && <MicRequired onHome={goHome} />}

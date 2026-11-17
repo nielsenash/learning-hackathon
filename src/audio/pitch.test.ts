@@ -47,25 +47,25 @@ describe("estimateStablePitch", () => {
 describe("scoreSing", () => {
   it("passes a note within 50 cents and names it", () => {
     const sampleRate = 44100;
-    const target = frequencyForNote("G4") * 2 ** (40 / 1200);
-    const score = scoreSing("G4", sine(target, sampleRate, sampleRate * 2), sampleRate);
+    const target = frequencyForNote("G") * 2 ** (40 / 1200);
+    const score = scoreSing("G", sine(target, sampleRate, sampleRate * 2), sampleRate);
     expect(score.pass).toBe(true);
-    expect(score.detectedNote).toBe("G4");
+    expect(score.detectedNote).toBe("G");
     expect(score.cents).toBeCloseTo(40, 0);
   });
 
   it("fails a note past the quarter-tone line and still names the nearest note", () => {
     const sampleRate = 44100;
-    const sung = frequencyForNote("E4") * 2 ** (40 / 1200);
-    const score = scoreSing("C4", sine(sung, sampleRate, sampleRate * 2), sampleRate);
+    const sung = frequencyForNote("E") / 2 * 2 ** (40 / 1200);
+    const score = scoreSing("C", sine(sung, sampleRate, sampleRate * 2), sampleRate);
     expect(score.pass).toBe(false);
-    expect(score.detectedNote).toBe("E4");
+    expect(score.detectedNote).toBe("E");
     expect(score.cents).not.toBeNull();
     expect(Math.abs(score.cents ?? 0)).toBeGreaterThan(50);
   });
 
   it("fails when the clip has no stable pitch", () => {
-    expect(scoreSing("A4", new Float32Array(44100), 44100)).toEqual({
+    expect(scoreSing("A", new Float32Array(44100), 44100)).toEqual({
       pass: false,
       detectedNote: null,
       cents: null,

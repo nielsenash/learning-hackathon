@@ -2,17 +2,20 @@ import { useEffect, useState } from "react";
 import { NOTE_NAMES, type NoteName } from "../audio/notes";
 import { playNote, stopPlayback } from "../audio/player";
 import { pickRoundNotes } from "../audio/round";
+import type { NoteAttempt } from "../progress/storage";
 
 type Props = {
   onExit: () => void;
-  onComplete: (hits: boolean[]) => void;
+  notes?: NoteName[];
+  onComplete: (hits: boolean[], attempts: NoteAttempt[]) => void;
 };
 
-export function ListenRound({ onExit, onComplete }: Props) {
-  const [notes] = useState(pickRoundNotes);
+export function ListenRound({ onExit, notes: selectedNotes, onComplete }: Props) {
+  const [notes] = useState(() => selectedNotes ?? pickRoundNotes());
   const [index, setIndex] = useState(0);
   const [choice, setChoice] = useState<NoteName | null>(null);
   const [hits, setHits] = useState<boolean[]>([]);
+  const [attempts, setAttempts] = useState<NoteAttempt[]>([]);
   const [playError, setPlayError] = useState<string | null>(null);
   const target = notes[index];
 
@@ -32,12 +35,13 @@ export function ListenRound({ onExit, onComplete }: Props) {
     if (choice) return;
     setChoice(note);
     setHits((prev) => [...prev, note === target]);
+    setAttempts((prev) => [...prev, { note: target, hit: note === target }]);
   }
 
   function next() {
     if (!choice) return;
     if (index === notes.length - 1) {
-      onComplete(hits);
+      onComplete(hits, attempts);
       return;
     }
     setChoice(null);

@@ -1,16 +1,16 @@
 export const NOTE_NAMES = [
-  "C4",
-  "C#4",
-  "D4",
-  "D#4",
-  "E4",
-  "F4",
-  "F#4",
-  "G4",
-  "G#4",
-  "A4",
-  "A#4",
-  "B4",
+  "C",
+  "C#",
+  "D",
+  "D#",
+  "E",
+  "F",
+  "F#",
+  "G",
+  "G#",
+  "A",
+  "A#",
+  "B",
 ] as const;
 
 export type NoteName = (typeof NOTE_NAMES)[number];
@@ -20,18 +20,18 @@ const A4_HZ = 440;
 const MIDI_C4 = 60;
 
 const SAMPLE_FILES: Record<NoteName, string> = {
-  C4: "C4",
-  "C#4": "Cs4",
-  D4: "D4",
-  "D#4": "Ds4",
-  E4: "E4",
-  F4: "F4",
-  "F#4": "Fs4",
-  G4: "G4",
-  "G#4": "Gs4",
-  A4: "A4",
-  "A#4": "As4",
-  B4: "B4",
+  C: "C4",
+  "C#": "Cs4",
+  D: "D4",
+  "D#": "Ds4",
+  E: "E4",
+  F: "F4",
+  "F#": "Fs4",
+  G: "G4",
+  "G#": "Gs4",
+  A: "A4",
+  "A#": "As4",
+  B: "B4",
 };
 
 export function midiForNote(note: NoteName): number {
@@ -50,6 +50,11 @@ export function centsBetween(detectedHz: number, targetHz: number): number {
   return 1200 * Math.log2(detectedHz / targetHz);
 }
 
+export function pitchClassCentsBetween(detectedHz: number, targetHz: number): number {
+  const cents = centsBetween(detectedHz, targetHz);
+  return ((cents + 600) % 1200 + 1200) % 1200 - 600;
+}
+
 export function isPass(cents: number): boolean {
   return Math.abs(cents) <= PASS_CENTS;
 }
@@ -58,7 +63,7 @@ export function nearestNote(detectedHz: number): NoteName {
   let best: NoteName = NOTE_NAMES[0];
   let bestDistance = Infinity;
   for (const note of NOTE_NAMES) {
-    const distance = Math.abs(centsBetween(detectedHz, frequencyForNote(note)));
+    const distance = Math.abs(pitchClassCentsBetween(detectedHz, frequencyForNote(note)));
     if (distance < bestDistance) {
       best = note;
       bestDistance = distance;

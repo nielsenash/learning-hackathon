@@ -1,9 +1,17 @@
+import { NOTE_NAMES, type NoteName } from "../audio/notes";
+
 export type Mode = "listen" | "sing";
 
 export type RoundRecord = {
   mode: Mode;
   score: number;
   timestamp: number;
+  attempts?: NoteAttempt[];
+};
+
+export type NoteAttempt = {
+  note: NoteName;
+  hit: boolean;
 };
 
 export type ModeProgress = {
@@ -42,11 +50,15 @@ export function recordRound(
   mode: Mode,
   hits: boolean[],
   timestamp = Date.now(),
+  attempts?: NoteAttempt[],
 ): Progress {
   const score = hits.filter(Boolean).length;
   const current = progress[mode];
   const best = current.best === null ? score : Math.max(current.best, score);
-  const history = [{ mode, score, timestamp }, ...progress.history].slice(0, HISTORY_LIMIT);
+  const history = [{ mode, score, timestamp, ...(attempts ? { attempts } : {}) }, ...progress.history].slice(
+    0,
+    HISTORY_LIMIT,
+  );
   return {
     ...progress,
     [mode]: { best, streak: nextStreak(current.streak, hits) },
@@ -74,6 +86,16 @@ function isModeProgress(value: unknown): value is ModeProgress {
 function isRoundRecord(value: unknown): value is RoundRecord {
   if (!value || typeof value !== "object") return false;
   const record = value as RoundRecord;
+  const attempts = record.attempts;
+  const attemptsOk =
+    attempts === undefined ||
+    (Array.isArray(attempts) &&
+      attempts.length <= 5 &&
+      attempts.every((attempt) => {
+        if (!attempt || typeof attempt !== "object") return false;
+        const item = attempt as NoteAttempt;
+        return NOTE_NAMES.includes(item.note) && typeof item.hit === "boolean";
+      }));
   return (
     (record.mode === "listen" || record.mode === "sing") &&
     typeof record.score === "number" &&
@@ -81,7 +103,8 @@ function isRoundRecord(value: unknown): value is RoundRecord {
     record.score >= 0 &&
     record.score <= 5 &&
     typeof record.timestamp === "number" &&
-    Number.isFinite(record.timestamp)
+    Number.isFinite(record.timestamp) &&
+    attemptsOk
   );
 }
 

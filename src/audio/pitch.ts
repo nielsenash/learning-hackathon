@@ -1,5 +1,12 @@
 import { PitchDetector } from "pitchy";
-import { centsBetween, frequencyForNote, isPass, nearestNote, type NoteName } from "./notes";
+import {
+  centsBetween,
+  frequencyForNote,
+  isPass,
+  nearestNote,
+  pitchClassCentsBetween,
+  type NoteName,
+} from "./notes";
 
 const FRAME_SIZE = 2048;
 const HOP_SIZE = 256;
@@ -55,7 +62,7 @@ export function estimateStablePitch(samples: Float32Array, sampleRate: number): 
 export function scoreSing(target: NoteName, samples: Float32Array, sampleRate: number): SingScore {
   const estimate = estimateStablePitch(samples, sampleRate);
   if (!estimate.ok) return { pass: false, detectedNote: null, cents: null };
-  const cents = centsBetween(estimate.frequency, frequencyForNote(target));
+  const cents = pitchClassCentsBetween(estimate.frequency, frequencyForNote(target));
   return {
     pass: isPass(cents),
     detectedNote: nearestNote(estimate.frequency),

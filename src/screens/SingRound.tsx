@@ -1,23 +1,26 @@
 import { useEffect, useState } from "react";
-import { formatCents } from "../audio/notes";
+import { formatCents, type NoteName } from "../audio/notes";
 import { scoreSing, type SingScore } from "../audio/pitch";
 import { playNote, stopPlayback } from "../audio/player";
 import { recordClip } from "../audio/recorder";
 import { pickRoundNotes } from "../audio/round";
+import type { NoteAttempt } from "../progress/storage";
 
 type Props = {
   onExit: () => void;
   onMicDenied: () => void;
-  onComplete: (hits: boolean[]) => void;
+  notes?: NoteName[];
+  onComplete: (hits: boolean[], attempts: NoteAttempt[]) => void;
 };
 
 type Phase = "idle" | "recording" | "revealed";
 
-export function SingRound({ onExit, onMicDenied, onComplete }: Props) {
-  const [notes] = useState(pickRoundNotes);
+export function SingRound({ onExit, onMicDenied, notes: selectedNotes, onComplete }: Props) {
+  const [notes] = useState(() => selectedNotes ?? pickRoundNotes());
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("idle");
   const [hits, setHits] = useState<boolean[]>([]);
+  const [attempts, setAttempts] = useState<NoteAttempt[]>([]);
   const [score, setScore] = useState<SingScore | null>(null);
   const [error, setError] = useState<string | null>(null);
   const target = notes[index];
@@ -44,6 +47,7 @@ export function SingRound({ onExit, onMicDenied, onComplete }: Props) {
       const result = scoreSing(target, clip.samples, clip.sampleRate);
       setScore(result);
       setHits((prev) => [...prev, result.pass]);
+      setAttempts((prev) => [...prev, { note: target, hit: result.pass }]);
       setPhase("revealed");
     } catch (err) {
       setPhase("idle");
@@ -61,7 +65,7 @@ export function SingRound({ onExit, onMicDenied, onComplete }: Props) {
   function next() {
     if (phase !== "revealed" || !score) return;
     if (index === notes.length - 1) {
-      onComplete(hits);
+      onComplete(hits, attempts);
       return;
     }
     setScore(null);

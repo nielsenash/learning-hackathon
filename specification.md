@@ -15,8 +15,8 @@ A demo audience with no assumed music training. The first session is the whole p
 
 ## Note set
 
-- Chromatic notes from C4 to B4 (12 notes).
-- Display names use scientific pitch notation (`C4`, `C#4`, `D4`, …).
+- Chromatic pitch classes from C to B (12 notes).
+- Display names use pitch-class notation (`C`, `C#`, `D`, …), without requiring a specific octave.
 - Reference pitch is A4 = 440 Hz.
 - Playback and scoring use the same note set.
 
@@ -26,7 +26,7 @@ A demo audience with no assumed music training. The first session is the whole p
 
 1. The app plays one bundled piano sample.
 2. The user may replay it.
-3. The user selects one note from C4–B4.
+3. The user selects one note from C–B.
 4. The app reveals the correct note and whether the choice matched.
 5. The user can start the next item. A round is 5 items.
 
@@ -47,11 +47,11 @@ The user can switch modes from the home screen. A round in progress can be aband
 - Error is the distance from the target frequency, in cents.
 - **Pass:** absolute error of 50 cents or less (within a quarter tone).
 - **Fail:** anything farther, or no stable pitch detected.
-- The result also names the nearest note in the C4–B4 set, so a miss still teaches which note was sung.
+- The result also names the nearest pitch class in the C–B set, so a miss still teaches which note was sung.
 
 ## Samples
 
-- One piano recording per note, C4–B4, bundled with the app.
+- One piano recording per pitch class, using octave 4 as the bundled reference, is included with the app.
 - Samples are short (about 1–2 seconds), normalized to a similar loudness, and licensed for redistribution.
 - The listen mode plays these files. The sing mode uses the same files only as an optional reference tone.
 
